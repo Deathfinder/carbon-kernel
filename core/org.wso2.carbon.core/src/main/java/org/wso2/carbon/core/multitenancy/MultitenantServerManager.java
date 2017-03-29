@@ -22,27 +22,23 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.core.multitenancy.utils.TenantAxisUtils;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 /**
  * Handles server startup & iniatialization when a multitenant deployment is available
  */
 public class MultitenantServerManager {
 
     private static final Log log = LogFactory.getLog(MultitenantServerManager.class);
-    private static final ScheduledExecutorService tenantCleanupExec = Executors.newScheduledThreadPool(1);
-    private static final int TENANT_CLEANUP_PERIOD_SECS = 60;
+    //private static final ScheduledExecutorService tenantCleanupExec = Executors.newScheduledThreadPool(1);
+    //private static final int TENANT_CLEANUP_PERIOD_SECS = 60;
     private static final int DEFAULT_TENANT_IDLE_MINS = 30;
     private static long tenantIdleTimeMillis;
 
     static {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() {
-                tenantCleanupExec.shutdownNow();
-            }
-        });
+//        Runtime.getRuntime().addShutdownHook(new Thread() {
+//            public void run() {
+//                tenantCleanupExec.shutdownNow();
+//            }
+//        });
         tenantIdleTimeMillis =
                 Long.parseLong(System.getProperty(MultitenantConstants.TENANT_IDLE_TIME,
                                                   String.valueOf(DEFAULT_TENANT_IDLE_MINS)))*
@@ -57,10 +53,11 @@ public class MultitenantServerManager {
      */
     public void start(ConfigurationContext configCtx) throws Exception {
         // schedule the tenant cleanup task
-        TenantCleanupTask tenantCleanupTask = new TenantCleanupTask();
-        tenantCleanupExec.scheduleAtFixedRate(tenantCleanupTask,
-                TENANT_CLEANUP_PERIOD_SECS,
-                TENANT_CLEANUP_PERIOD_SECS, TimeUnit.SECONDS);
+        // Turn off cleanup task. Try to avoid NPE in Axis configuration after cleanup.
+        //TenantCleanupTask tenantCleanupTask = new TenantCleanupTask();
+//        tenantCleanupExec.scheduleAtFixedRate(tenantCleanupTask,
+//                TENANT_CLEANUP_PERIOD_SECS,
+//                TENANT_CLEANUP_PERIOD_SECS, TimeUnit.SECONDS);
     }
 
     private static class TenantCleanupTask implements Runnable {
@@ -78,7 +75,7 @@ public class MultitenantServerManager {
     }
 
     public void cleanup() {
-        tenantCleanupExec.shutdownNow();
+        //tenantCleanupExec.shutdownNow();
     }
 
     /*private static final ExecutorService exec = Executors.newCachedThreadPool();

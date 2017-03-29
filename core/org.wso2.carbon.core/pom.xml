@@ -31,6 +31,16 @@
     <description>OSGi Bundle for Carbon Core</description>
     <url>http://wso2.org</url>
 
+    <distributionManagement>
+
+      <repository>
+        <id>xm-snapshot-local</id>
+        <uniqueVersion>true</uniqueVersion>
+        <name>Private Artifactory (snapshots)</name>
+        <url>https://artifactory.jbs.com.ua/artifactory/xm-snapshot-local</url>
+      </repository>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.wso2.orbit.com.hazelcast</groupId>
